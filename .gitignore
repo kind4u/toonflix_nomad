@@ -40,6 +40,12 @@ migrate_working_dir/
 **/ios/Runner/GeneratedPluginRegistrant.*
 **/ios/Flutter/ephemeral/
 **/macos/Flutter/ephemeral/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.podspec
+**/ios/Pods/
+**/ios/Podfile.lock
+**/macos/Pods/
+**/macos/Podfile.lock
 
 # Android Generated files
 **/android/local.properties
