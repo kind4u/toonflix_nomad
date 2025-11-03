@@ -1,16 +1,53 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+import 'package:toonflix/models/webtoon_detail_model.dart';
+import 'package:toonflix/models/webtoon_episode_model.dart';
+import 'package:toonflix/models/webtoon_model.dart';
 
 class ApiService {
-  final String baseUrl = "https://webtoon-crawler.nomadcoders.workers.dev";
-  final String today = "today";
+  static const String baseUrl =
+      "https://webtoon-crawler.nomadcoders.workers.dev";
+  static const String today = "today";
 
-  void getTodaysToons() async {
+  static List<WebtoonModel> webtoonInstances = [];
+
+  static Future<List<WebtoonModel>> getTodaysToons() async {
     final url = Uri.parse("$baseUrl/$today");
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      print("Success: ${response.body}");
+      final List<dynamic> webtoons = jsonDecode(response.body);
+      for (var webtoon in webtoons) {
+        webtoonInstances.add(WebtoonModel.fromJson(webtoon));
+      }
+      return webtoonInstances;
     } else {
-      print("Failed to load today's toons");
+      throw Error();
+    }
+  }
+
+  static Future<WebtoonDetailModel> getToonById(String id) async {
+    final url = Uri.parse("$baseUrl/$id");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      return WebtoonDetailModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Error();
+    }
+  }
+
+  static Future<List<WebtoonEpisodeModel>> getLatestEpisodesById(
+    String id,
+  ) async {
+    final url = Uri.parse("$baseUrl/$id/episodes");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final List<dynamic> episodes = jsonDecode(response.body);
+      return episodes
+          .map((episode) => WebtoonEpisodeModel.fromJson(episode))
+          .toList();
+    } else {
+      throw Error();
     }
   }
 }
