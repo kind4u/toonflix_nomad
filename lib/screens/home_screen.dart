@@ -27,8 +27,9 @@ class HomeScreen extends StatelessWidget {
           if (snapshot.hasData) {
             return Column(
               children: [
-                const SizedBox(height: 50),
-                Expanded(child: makeList(snapshot)),
+                const Spacer(flex: 1),
+                Expanded(flex: 3, child: makeList(snapshot)),
+                const Spacer(flex: 1),
               ],
             );
           }
@@ -38,11 +39,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  ListView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
-    return ListView.separated(
+  PageView makeList(AsyncSnapshot<List<WebtoonModel>> snapshot) {
+    final controller = PageController(viewportFraction: 0.70, initialPage: 1);
+
+    return PageView.builder(
+      controller: controller,
       scrollDirection: Axis.horizontal,
       itemCount: snapshot.data!.length,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       itemBuilder: (context, index) {
         print(index);
         var webtoon = snapshot.data![index];
@@ -53,7 +56,6 @@ class HomeScreen extends StatelessWidget {
           id: webtoon.id,
         );
       },
-      separatorBuilder: (context, index) => const SizedBox(width: 40),
     );
   }
 }
